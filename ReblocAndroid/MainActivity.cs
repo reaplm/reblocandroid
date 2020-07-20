@@ -6,6 +6,11 @@ using Android.Widget;
 using Android.Support.V4.Widget;
 using Android.Support.Design.Widget;
 using Android.Views;
+using Android.Support.V7.Widget;
+using Adapters;
+using System;
+using ReblocAndroid.Models;
+using System.Collections.Generic;
 
 namespace ReblocAndroid
 {
@@ -13,6 +18,23 @@ namespace ReblocAndroid
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
         private DrawerLayout drawerLayout;
+        private RecyclerView mainGrid;
+
+        private MainGridAdapter mGridAdapter;
+
+        int[] mainGridIcons = { Resource.Drawable.veges_40, Resource.Drawable.thanksgiving_turkey_40,
+            Resource.Drawable.bed_40, Resource.Drawable.restaurant_40, Resource.Drawable.taxi_40,
+            Resource.Drawable.milk_bottle_40, Resource.Drawable.potted_plant_40, Resource.Drawable.easel_40,
+            Resource.Drawable.facial_mask_40, Resource.Drawable.pet_40, Resource.Drawable.wedding_cake_40,
+            Resource.Drawable.worker_40, Resource.Drawable.feeding_chicken_40, Resource.Drawable.images_40,
+            Resource.Drawable.sheep_40,Resource.Drawable.truck_40, Resource.Drawable.tractor_40,
+            Resource.Drawable.concert_40
+        };
+
+        string[] mainGridText = { "Fruit And Veges", "Meat", "Accomodation", "Restaurants", "Cab", "Dairy",
+            "Plants/Flowers", "Art", "Beauty", "Pets", "Event Planners", "Construction Workers",
+            "Livestock Feed", "Photographers", "Livestock", "Water", "farming", "entertainment"
+        };
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -29,9 +51,42 @@ namespace ReblocAndroid
             drawerLayout.AddDrawerListener(drawerToggle);
             drawerToggle.SyncState();
 
+            //Setup MainGrid
+            List<GridItem> mainGridItems = GetGridItems();
+
+            mGridAdapter = new MainGridAdapter(mainGridItems);
+            mGridAdapter.ItemClick += OnItemClick;
+
+            mainGrid = FindViewById<RecyclerView>(Resource.Id.main_grid_view);
+            mainGrid.SetLayoutManager(new GridLayoutManager(this, 3));
+            mainGrid.SetAdapter( mGridAdapter);
+
+
             //Setup Navigation View
             SetNavigationViewListener();
         }
+
+        private List<GridItem> GetGridItems()
+        {
+            List<GridItem> gridItems = new List<GridItem>();
+
+            for (int i = 0; i < mainGridIcons.Length; i++)
+            {
+                gridItems.Add(new GridItem
+                {
+                    Name = mainGridText[i],
+                    Resource = mainGridIcons[i]
+                });
+            }
+
+            return gridItems;
+        }
+
+        private void OnItemClick(object sender, MainGridAdapterClickEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void SetNavigationViewListener()
         {
             NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);

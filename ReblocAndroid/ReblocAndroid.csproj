@@ -59,7 +59,9 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\MainGridAdapter.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Models\GridItem.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,38 +125,63 @@
     <AndroidResource Include="Resources\menu\menu_drawer.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\fruit.png" />
+    <AndroidResource Include="Resources\layout\main_grid_item.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\guide.png" />
+    <AndroidResource Include="Resources\drawable\pet_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\hen.png" />
+    <AndroidResource Include="Resources\drawable\restaurant_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\milk.png" />
+    <AndroidResource Include="Resources\drawable\bed_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\sleep.png" />
+    <AndroidResource Include="Resources\drawable\thanksgiving_turkey_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\taxi.png" />
+    <AndroidResource Include="Resources\drawable\veges_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\vegetables.png" />
+    <AndroidResource Include="Resources\drawable\images_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\veges.png" />
+    <AndroidResource Include="Resources\drawable\worker_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bed.png" />
+    <AndroidResource Include="Resources\drawable\wedding_cake_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\meat.png" />
+    <AndroidResource Include="Resources\drawable\potted_plant_40.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Models\" />
+    <AndroidResource Include="Resources\drawable\facial_mask_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\easel_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\milk_bottle_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\taxi_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\sheep_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\truck_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\feeding_chicken_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\concert_40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\tractor_40.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
