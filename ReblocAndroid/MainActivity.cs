@@ -11,6 +11,9 @@ using Adapters;
 using System;
 using ReblocAndroid.Models;
 using System.Collections.Generic;
+using Android.Content;
+using Firebase;
+using Firebase.Firestore;
 
 namespace ReblocAndroid
 {
@@ -21,6 +24,7 @@ namespace ReblocAndroid
         private RecyclerView mainGrid;
 
         private MainGridAdapter mGridAdapter;
+        List<GridItem> mainGridItems;
 
         int[] mainGridIcons = { Resource.Drawable.veges_40, Resource.Drawable.thanksgiving_turkey_40,
             Resource.Drawable.bed_40, Resource.Drawable.restaurant_40, Resource.Drawable.taxi_40,
@@ -35,6 +39,10 @@ namespace ReblocAndroid
             "Plants/Flowers", "Art", "Beauty", "Pets", "Event Planners", "Construction Workers",
             "Livestock Feed", "Photographers", "Livestock", "Water", "farming", "entertainment"
         };
+        private FirebaseApp app;
+        private FirebaseFirestore db;
+
+        public object FirebaseAuth { get; private set; }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -52,7 +60,7 @@ namespace ReblocAndroid
             drawerToggle.SyncState();
 
             //Setup MainGrid
-            List<GridItem> mainGridItems = GetGridItems();
+            mainGridItems = GetGridItems();
 
             mGridAdapter = new MainGridAdapter(mainGridItems);
             mGridAdapter.ItemClick += OnItemClick;
@@ -61,9 +69,11 @@ namespace ReblocAndroid
             mainGrid.SetLayoutManager(new GridLayoutManager(this, 3));
             mainGrid.SetAdapter( mGridAdapter);
 
+            FirebaseApp.InitializeApp(this);
 
             //Setup Navigation View
             SetNavigationViewListener();
+
         }
 
         private List<GridItem> GetGridItems()
@@ -81,10 +91,20 @@ namespace ReblocAndroid
 
             return gridItems;
         }
-
+        /// <summary>
+        /// MainGridItem Onclick Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnItemClick(object sender, MainGridAdapterClickEventArgs e)
         {
-            throw new NotImplementedException();
+            //start a new activity
+            var item = mainGridItems[e.Position];
+
+            Intent intent = new Intent(this, typeof(MainGridDetailActivity));
+            intent.PutExtra("Name", item.Name);
+
+            StartActivity(intent);
         }
 
         private void SetNavigationViewListener()
