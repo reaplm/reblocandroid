@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Android.Content;
 using Firebase;
 using Firebase.Firestore;
+using Android.Support.V4.View;
 
 namespace ReblocAndroid
 {
@@ -114,7 +115,25 @@ namespace ReblocAndroid
         }
         public bool OnNavigationItemSelected(IMenuItem menuItem)
         {
-            throw new System.NotImplementedException();
+            switch (menuItem.ItemId)
+            {
+                case Resource.Id.action_login:
+                    SignIn();
+                    break;
+            }
+            drawerLayout.CloseDrawer(GravityCompat.Start, true);
+
+            return true;
+        }
+        /// <summary>
+        /// Sign In
+        /// Starts LoginActivity
+        /// </summary>
+        void SignIn()
+        {
+            Intent intent = new Intent(this, typeof(LoginActivity));
+
+            StartActivityForResult(intent, 1);
         }
     }
 }
