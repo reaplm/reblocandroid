@@ -8,15 +8,44 @@
 	android:gravity="bottom"
 	>
 
-	<Space
+	
+	<EditText 
 		android:layout_width="match_parent"
-		android:layout_height="20dp" />
-
+		android:layout_height="wrap_content"
+		  android:hint="First Name"
+		android:id="@+id/register_fname"
+		 android:textColor="@color/colorPrimaryDark"
+		android:textColorHint="@color/colorAccent"
+		android:backgroundTint="@color/colorPrimaryDark"
+		 android:textCursorDrawable="@drawable/cursor"
+	/>
+	
+	<EditText 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		  android:hint="Last Name"
+		android:id="@+id/register_lname"
+		 android:textColor="@color/colorPrimaryDark"
+		android:textColorHint="@color/colorAccent"
+		android:backgroundTint="@color/colorPrimaryDark"
+		 android:textCursorDrawable="@drawable/cursor"
+	/>
+	
+	<EditText 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		  android:hint="Phone"
+		android:id="@+id/register_phone"
+		 android:textColor="@color/colorPrimaryDark"
+		android:textColorHint="@color/colorAccent"
+		android:backgroundTint="@color/colorPrimaryDark"
+		 android:textCursorDrawable="@drawable/cursor"
+	/>
 	<EditText 
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		  android:hint="Email"
-		android:id="@+id/email"
+		android:id="@+id/register_email"
 		 android:textColor="@color/colorPrimaryDark"
 		android:textColorHint="@color/colorAccent"
 		android:backgroundTint="@color/colorPrimaryDark"
@@ -27,7 +56,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:hint="Password"
-		android:id="@+id/password" 
+		android:id="@+id/register_password" 
 		 android:textColor="@color/colorPrimaryDark"
 		android:textColorHint="@color/colorAccent"
 		android:backgroundTint="@color/colorPrimaryDark"
@@ -38,8 +67,8 @@
 	<Button 
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/login_button"
-		android:text="Log In"
+		android:id="@+id/register_button"
+		android:text="Submit"
 		android:background="@drawable/round_button"
 		android:textColor="@color/white"
 	/>
@@ -49,7 +78,7 @@
 		android:gravity="center"
 		android:orientation="horizontal">
 		<CheckBox 
-			android:id="@+id/login_rememberme"
+			android:id="@+id/register_rememberme"
 				android:layout_width="50dp"
 				android:layout_height="50dp"
 			android:textColor="@color/colorPrimaryDark"
@@ -62,12 +91,5 @@
 			android:text="Remember Me" 
 		android:textColor="@color/colorPrimaryDark"/>
 	</LinearLayout>
-	<TextView
-		android:id="@+id/register_link"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:text="@string/register_link" 
-		android:textColor="@color/colorPrimaryDark"/>
 
 </LinearLayout>
