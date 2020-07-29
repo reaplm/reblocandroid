@@ -22,6 +22,11 @@ namespace ReblocAndroid
         private Button loginButton;
         private CheckBox rememberMeCheck;
 
+        private const int REG_REQUEST_ID = 1001;
+
+        static Result RESULT_OK = Result.Ok;
+        static Result RESULT_CANCELED = Result.Canceled;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -39,17 +44,55 @@ namespace ReblocAndroid
             registerLink.Click += RegisterLink_Click;
             loginButton.Click += LoginButton_Click;
         }
-
+        /// <summary>
+        /// Start registration activity     
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RegisterLink_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(RegisterActivity));
 
-            StartActivity(intent);
+            StartActivityForResult(intent, 1001);
         }
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Intent result callback
+        /// </summary>
+        /// <param name="requestCode"></param>
+        /// <param name="resultCode"></param>
+        /// <param name="data"></param>
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            //RegistrationActivity
+            if (requestCode == 1001)
+            {
+                if (resultCode == RESULT_OK)
+                {
+                    bool isLoggedIn = data.GetBooleanExtra("isLoggedIn", false);
+
+                    if (isLoggedIn)
+                    {
+                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+
+                    }
+                    else
+                    {
+                        //UpdateUI();
+                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+                    }
+                }
+                else if (resultCode == RESULT_CANCELED)
+                {
+                    ;
+                }
+            }
         }
     }
 }

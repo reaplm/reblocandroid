@@ -10,6 +10,9 @@ using Android.Runtime;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Firebase;
+using Firebase.Auth;
+using Firebase.Firestore;
 
 namespace ReblocAndroid
 {
@@ -23,6 +26,9 @@ namespace ReblocAndroid
         private EditText password;
         private Button registerButton;
         private CheckBox rememberMeCheck;
+
+        private FirebaseApp app;
+        private FirebaseAuth auth;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -44,10 +50,57 @@ namespace ReblocAndroid
 
             registerButton.Click += RegisterButton_Click;
         }
-
-        private void RegisterButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Firebase Registration
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Intent result = new Intent();
+            try
+            {
+
+                //Initiaize Firebase Authentication Service
+                app = FirebaseApp.Instance;
+                auth = FirebaseAuth.GetInstance(app);
+
+                // Attempt registration and login
+                await auth.CreateUserWithEmailAndPasswordAsync(email.Text, password.Text);
+
+                if (auth.CurrentUser != null)//Success
+                {
+
+                    result.PutExtra("isLoggedIn", true);
+                    result.PutExtra("message", "Registration Successful!");
+                    SetResult(Result.Ok, result);
+
+                    //Toast.MakeText(this,"Login Successful!", ToastLength.Long).Show();
+                }
+                else //failed login
+                {
+                    result.PutExtra("isLoggedIn", false);
+                    result.PutExtra("message", "Registration falied");
+                    SetResult(Result.Ok, result);
+
+                    //Toast.MakeText(this, "Login Failed", ToastLength.Long).Show();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.PutExtra("isLoggedIn", false);
+                result.PutExtra("message", ex.Message);
+                SetResult(Result.Ok, result);
+                //Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+ 
+            }
+            finally
+            {
+                //Close Activity 
+                Finish();
+            }
         }
     }
 }
