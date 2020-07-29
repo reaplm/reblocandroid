@@ -15,6 +15,7 @@ using Android.Content;
 using Firebase;
 using Firebase.Firestore;
 using Android.Support.V4.View;
+using Firebase.Auth;
 
 namespace ReblocAndroid
 {
@@ -42,8 +43,13 @@ namespace ReblocAndroid
         };
         private FirebaseApp app;
         private FirebaseFirestore db;
+        private FirebaseAuth auth;
 
-        public object FirebaseAuth { get; private set; }
+        private const int REG_REQUEST_ID = 1001;
+        private const int LOGIN_REQUEST_ID = 1002;
+
+        static Result RESULT_OK = Result.Ok;
+        static Result RESULT_CANCELED = Result.Canceled;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -70,11 +76,14 @@ namespace ReblocAndroid
             mainGrid.SetLayoutManager(new GridLayoutManager(this, 3));
             mainGrid.SetAdapter( mGridAdapter);
 
-            FirebaseApp.InitializeApp(this);
+            app = FirebaseApp.InitializeApp(this);
+            auth = FirebaseAuth.GetInstance(app);
 
             //Setup Navigation View
             SetNavigationViewListener();
 
+            //Setup UI
+            UpdateUI();
         }
 
         private List<GridItem> GetGridItems()
@@ -118,7 +127,8 @@ namespace ReblocAndroid
             switch (menuItem.ItemId)
             {
                 case Resource.Id.action_login:
-                    SignIn();
+                    if (auth.CurrentUser == null) { SignIn(); }
+                    else SignOut();
                     break;
             }
             drawerLayout.CloseDrawer(GravityCompat.Start, true);
@@ -134,6 +144,72 @@ namespace ReblocAndroid
             Intent intent = new Intent(this, typeof(LoginActivity));
 
             StartActivityForResult(intent, 1);
+        }
+        /// <summary>
+        /// Sign out
+        /// </summary>
+        private void SignOut()
+        {
+            auth.SignOut();
+            Toast.MakeText(this, "Sign Out Successful!", ToastLength.Long).Show();
+            UpdateUI();
+        }
+        /// <summary>
+        /// On return from activity
+        /// 1: LoginActivity
+        /// </summary>
+        /// <param name="requestCode">Code to identify activity</param>
+        /// <param name="resultCode">Success/Fail code</param>
+        /// <param name="data">Returned Data</param>
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            //LoginActivity
+            if (requestCode == 1002)
+            {
+                if (resultCode == RESULT_OK)
+                {
+                    bool isLoggedIn = data.GetBooleanExtra("isLoggedIn", false);
+
+                    if (isLoggedIn)
+                    {
+                        UpdateUI();
+                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+                    }
+                    else
+                    {
+                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+                    }
+                }
+                else if (resultCode == RESULT_CANCELED)
+                {
+                    ;
+                }
+            }
+        }
+        /// <summary>
+        /// Update user interface on login or logout
+        /// </summary>
+        private void UpdateUI()
+        {
+            NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);
+
+            IMenu menu = navigationView.Menu;
+            IMenuItem menuItem = menu.FindItem(Resource.Id.action_login);
+
+            View navHeader = navigationView.GetHeaderView(0);
+
+            if (auth.CurrentUser != null)
+            {
+                menuItem.SetTitle("Log Out");
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = auth.CurrentUser.Email;
+            }
+            else
+            {
+                menuItem.SetTitle("Log In");
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = "";
+            }
         }
     }
 }

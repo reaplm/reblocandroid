@@ -6,14 +6,14 @@
 	android:id="@+id/nav_header"
 	android:orientation="vertical"
 	android:clickable="true"
-	android:background="@color/colorPrimary"
+	android:background="@color/white"
 	android:paddingTop="30dp">
 	
 	<ImageView 
 	android:id="@+id/nav_header_image"
 	android:layout_width="match_parent"
     android:layout_height="180dp"
-
+		android:src="@drawable/female_user_256"
 	/>
 	<TextView
 	android:id="@+id/nav_header_text"
@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
 	android:textAlignment="center"
 	android:layout_below="@id/nav_header_image"
-	android:textColor="@color/white"
-	android:text=" "
+	android:textColor="@color/colorPrimaryDark"
+	android:text="Anonymous"
 	/>
 </RelativeLayout>
