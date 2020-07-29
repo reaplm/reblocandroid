@@ -10,6 +10,8 @@ using Android.Runtime;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Firebase;
+using Firebase.Auth;
 
 namespace ReblocAndroid
 {
@@ -21,6 +23,9 @@ namespace ReblocAndroid
         private TextView registerLink;
         private Button loginButton;
         private CheckBox rememberMeCheck;
+
+        private FirebaseApp app;
+        private FirebaseAuth auth;
 
         private const int REG_REQUEST_ID = 1001;
 
@@ -43,6 +48,10 @@ namespace ReblocAndroid
 
             registerLink.Click += RegisterLink_Click;
             loginButton.Click += LoginButton_Click;
+
+            app = FirebaseApp.Instance;
+            auth = FirebaseAuth.GetInstance(app);
+
         }
         /// <summary>
         /// Start registration activity     
@@ -56,9 +65,41 @@ namespace ReblocAndroid
             StartActivityForResult(intent, 1001);
         }
 
-        private void LoginButton_Click(object sender, EventArgs e)
+        private async void LoginButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Intent result = new Intent();
+
+            try
+            {
+
+                // Attempt Login 
+                await auth.SignInWithEmailAndPasswordAsync(email.Text, password.Text);
+
+                if (auth.CurrentUser != null)
+                {
+                    result.PutExtra("isLoggedIn", true);
+                    result.PutExtra("message", "Login Successful!");
+                    SetResult(Result.Ok, result);
+                }
+                else //failed login
+                {
+                    result.PutExtra("isLoggedIn", false);
+                    result.PutExtra("message", "Login Failed");
+                    SetResult(Result.Ok, result);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.PutExtra("isLoggedIn", false);
+                result.PutExtra("message", ex.Message);
+                SetResult(Result.Ok, result);
+            }
+            finally
+            {
+                //Close Activity 
+                Finish();
+            }
         }
         /// <summary>
         /// Intent result callback

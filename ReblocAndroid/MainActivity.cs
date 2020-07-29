@@ -143,7 +143,7 @@ namespace ReblocAndroid
         {
             Intent intent = new Intent(this, typeof(LoginActivity));
 
-            StartActivityForResult(intent, 1);
+            StartActivityForResult(intent, LOGIN_REQUEST_ID);
         }
         /// <summary>
         /// Sign out
@@ -166,7 +166,7 @@ namespace ReblocAndroid
             base.OnActivityResult(requestCode, resultCode, data);
 
             //LoginActivity
-            if (requestCode == 1002)
+            if (requestCode == LOGIN_REQUEST_ID)
             {
                 if (resultCode == RESULT_OK)
                 {
