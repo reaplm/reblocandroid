@@ -74,6 +74,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainGridDetailActivity.cs" />
     <Compile Include="Models\GridItem.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Vendor.cs" />
     <Compile Include="RegisterActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

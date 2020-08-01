@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -13,6 +14,7 @@ using Android.Widget;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Firestore;
+using ReblocAndroid.Models;
 
 namespace ReblocAndroid
 {
@@ -29,7 +31,7 @@ namespace ReblocAndroid
 
         private FirebaseApp app;
         private FirebaseAuth auth;
-
+        private FirebaseFirestore firestore;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -64,12 +66,23 @@ namespace ReblocAndroid
                 //Initiaize Firebase Authentication Service
                 app = FirebaseApp.Instance;
                 auth = FirebaseAuth.GetInstance(app);
+                firestore = FirebaseFirestore.GetInstance(app);
 
                 // Attempt registration and login
                 await auth.CreateUserWithEmailAndPasswordAsync(email.Text, password.Text);
 
                 if (auth.CurrentUser != null)//Success
-                {
+                { 
+                    //Add user to database. Log failures
+                    var dictionary = new Dictionary<string, Java.Lang.Object>();
+                    dictionary.Add("Uuid", auth.CurrentUser.Uid);
+                    dictionary.Add("Email", auth.CurrentUser.Email);
+                    dictionary.Add("FName", fName.Text);
+                    dictionary.Add("LName", lName.Text);
+                    dictionary.Add("Phone", phone.Text);
+                    dictionary.Add("Display", fName.Text);
+
+                    firestore.Collection("users").Add(dictionary);
 
                     result.PutExtra("isLoggedIn", true);
                     result.PutExtra("message", "Registration Successful!");
@@ -102,5 +115,6 @@ namespace ReblocAndroid
                 Finish();
             }
         }
+       
     }
 }
