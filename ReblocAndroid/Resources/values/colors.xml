@@ -5,6 +5,7 @@
     <color name="colorAccent">#9c4dcc</color>
 
   <color name="white">#ffffff</color>
+	<color name="lightGray">#f5f5f5</color>
 
   <!-- Navigation Drawer -->
   <color name="drawerBackground">#fafafa</color>

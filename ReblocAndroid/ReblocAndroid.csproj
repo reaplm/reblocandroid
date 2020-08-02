@@ -74,8 +74,8 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainGridDetailActivity.cs" />
     <Compile Include="Models\GridItem.cs" />
-    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Vendor.cs" />
+    <Compile Include="ProfileActivity.cs" />
     <Compile Include="RegisterActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -308,6 +308,20 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\female_user_256.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_profile.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\user_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\email_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\phone_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

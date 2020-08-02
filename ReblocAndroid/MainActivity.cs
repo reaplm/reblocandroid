@@ -16,11 +16,12 @@ using Firebase;
 using Firebase.Firestore;
 using Android.Support.V4.View;
 using Firebase.Auth;
+using Android.Media;
 
 namespace ReblocAndroid
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
+    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener, View.IOnClickListener
     {
         private DrawerLayout drawerLayout;
         private RecyclerView mainGrid;
@@ -45,12 +46,15 @@ namespace ReblocAndroid
         private FirebaseFirestore db;
         private FirebaseAuth auth;
 
+        private ImageView profileImage;
+
         private const int REG_REQUEST_ID = 1001;
         private const int LOGIN_REQUEST_ID = 1002;
 
         static Result RESULT_OK = Result.Ok;
         static Result RESULT_CANCELED = Result.Canceled;
 
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -81,6 +85,7 @@ namespace ReblocAndroid
 
             //Setup Navigation View
             SetNavigationViewListener();
+
 
             //Setup UI
             UpdateUI();
@@ -121,7 +126,29 @@ namespace ReblocAndroid
         {
             NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
+            var navHeader = navigationView.GetHeaderView(0);
+            navHeader.SetOnClickListener(this);
+           
         }
+        public void OnClick(View view)
+        {
+            int id = view.Id;
+
+            switch (id)
+            {
+                case Resource.Id.nav_header:
+                    Intent intent = new Intent(this,typeof(ProfileActivity));
+                    StartActivity(intent);
+                    //Toast.MakeText(this, "You Clicked NavHeader", ToastLength.Long).Show();
+                    break;
+            }
+        }
+
+        private void ProfileClick(object sender, EventArgs e)
+        {
+            Toast.MakeText(this, "You Clicked Profile", ToastLength.Long).Show();
+        }
+
         public bool OnNavigationItemSelected(IMenuItem menuItem)
         {
             switch (menuItem.ItemId)
