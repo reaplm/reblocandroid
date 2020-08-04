@@ -133,6 +133,9 @@ namespace ReblocAndroid
 
                             document.Update((IDictionary<string, Java.Lang.Object>)data);
 
+                            Toast.MakeText(this, "Done!", ToastLength.Long).Show();
+
+
                         }
                         else { Toast.MakeText(this, "Something went wrong. Sorry.", ToastLength.Long).Show(); }
                     }
