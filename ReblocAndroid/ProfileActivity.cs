@@ -5,6 +5,7 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Media;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.App;
@@ -16,6 +17,7 @@ using Firebase.Firestore;
 using Org.Apache.Http.Authentication;
 using ReblocAndroid.Adapters;
 using ReblocAndroid.Models;
+using AlertDialog = Android.Support.V7.App.AlertDialog;
 
 namespace ReblocAndroid
 {
@@ -25,7 +27,8 @@ namespace ReblocAndroid
         private TextView name;
         private TextView email;
         private TextView phone;
-
+        private ImageButton editName;
+        private ImageButton editPhone;
 
         private FirebaseApp app;
         private FirebaseAuth auth;
@@ -41,7 +44,11 @@ namespace ReblocAndroid
             name = FindViewById<TextView>(Resource.Id.profile_name_text);
             email = FindViewById<TextView>(Resource.Id.profile_email_text);
             phone = FindViewById<TextView>(Resource.Id.profile_phone_text);
+            editName = FindViewById<ImageButton>(Resource.Id.profile_name_edit);
+            editPhone = FindViewById<ImageButton>(Resource.Id.profile_phone_edit);
 
+            editName.Click += EditName_Click; 
+            editPhone.Click += EditPhone_Click;
 
             //get current user
             app = FirebaseApp.Instance;
@@ -54,6 +61,73 @@ namespace ReblocAndroid
 
 
             
+        }
+        /// <summary>
+        /// Dialog for editing phone number
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditPhone_Click(object sender, EventArgs e)
+        {
+            LayoutInflater inflater = LayoutInflater.From(this);
+            View view = inflater.Inflate(Resource.Layout.dialog_profile_phone, null);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.SetView(view);
+
+            var editPhone = view.FindViewById<EditText>(Resource.Id.dialog_edit_phone);
+            editPhone.Text = phone.Text;
+
+            alertBuilder.SetTitle("Edit Phone")
+                .SetPositiveButton("Submit", delegate
+                {
+                    Toast.MakeText(this, "You clicked Submit!", ToastLength.Short).Show();
+
+                })
+                .SetNegativeButton("Cancel", delegate
+                {
+                    alertBuilder.Dispose();
+
+                });
+
+            AlertDialog alertDialog = alertBuilder.Create();
+            alertDialog.Show();
+
+        }
+        /// <summary>
+        /// Dialog for editing first and last name
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditName_Click(object sender, EventArgs e)
+        {
+            LayoutInflater inflater = LayoutInflater.From(this);
+            View view = inflater.Inflate(Resource.Layout.dialog_profile_name, null);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.SetView(view);
+
+            var fName = view.FindViewById<EditText>(Resource.Id.dialog_edit_fname);
+            var lName = view.FindViewById<EditText>(Resource.Id.dialog_edit_lname);
+
+            string[] fullName = name.Text.Split(" ");
+            fName.Text = fullName[0];
+            lName.Text = fullName[1];
+
+            alertBuilder.SetTitle("Edit Name")
+                .SetPositiveButton("Submit", delegate
+                {
+                    Toast.MakeText(this, "You clicked Submit!", ToastLength.Short).Show();
+
+                })
+                .SetNegativeButton("Cancel", delegate
+                {
+                    alertBuilder.Dispose();
+
+                });
+
+            AlertDialog alertDialog = alertBuilder.Create();
+            alertDialog.Show();
         }
     }
 }
