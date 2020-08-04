@@ -75,14 +75,14 @@ namespace ReblocAndroid
                 { 
                     //Add user to database. Log failures
                     var dictionary = new Dictionary<string, Java.Lang.Object>();
-                    dictionary.Add("Uuid", auth.CurrentUser.Uid);
+                    dictionary.Add("Uid", auth.CurrentUser.Uid);
                     dictionary.Add("Email", auth.CurrentUser.Email);
                     dictionary.Add("FName", fName.Text);
                     dictionary.Add("LName", lName.Text);
                     dictionary.Add("Phone", phone.Text);
                     dictionary.Add("Display", fName.Text);
 
-                    firestore.Collection("users").Add(dictionary);
+                    firestore.Collection("users").Document(auth.CurrentUser.Uid).Set(dictionary);
 
                     result.PutExtra("isLoggedIn", true);
                     result.PutExtra("message", "Registration Successful!");

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Gms.Tasks;
 using Android.Media;
 using Android.OS;
 using Android.Runtime;
@@ -22,7 +24,7 @@ using AlertDialog = Android.Support.V7.App.AlertDialog;
 namespace ReblocAndroid
 {
     [Activity(Label = "Account")]
-    public class ProfileActivity : AppCompatActivity
+    public class ProfileActivity : AppCompatActivity, IOnSuccessListener
     {
         private TextView name;
         private TextView email;
@@ -32,6 +34,7 @@ namespace ReblocAndroid
 
         private FirebaseApp app;
         private FirebaseAuth auth;
+        private FirebaseFirestore db;
 
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -53,6 +56,7 @@ namespace ReblocAndroid
             //get current user
             app = FirebaseApp.Instance;
             auth = FirebaseAuth.GetInstance(app);
+            db = FirebaseFirestore.GetInstance(app);
 
             var user = auth.CurrentUser;
             name.Text = "Pearl Molefe";
@@ -117,7 +121,26 @@ namespace ReblocAndroid
             alertBuilder.SetTitle("Edit Name")
                 .SetPositiveButton("Submit", delegate
                 {
-                    Toast.MakeText(this, "You clicked Submit!", ToastLength.Short).Show();
+                    try
+                    {
+                        //get current user
+                        if (auth.CurrentUser != null)
+                        {
+                            var document = db.Collection("users").Document(auth.CurrentUser.Uid);
+                            var data = new Dictionary<string, Java.Lang.Object>();
+                            data.Add("FName", fName.Text);
+                            data.Add("LName", lName.Text);
+
+                            document.Update((IDictionary<string, Java.Lang.Object>)data);
+
+                        }
+                        else { Toast.MakeText(this, "Something went wrong. Sorry.", ToastLength.Long).Show(); }
+                    }
+                    catch(Exception ex)
+                    {
+                        Toast.MakeText(this, "Failed to update. Sorry.", ToastLength.Long).Show(); 
+                    }
+                    
 
                 })
                 .SetNegativeButton("Cancel", delegate
@@ -128,6 +151,11 @@ namespace ReblocAndroid
 
             AlertDialog alertDialog = alertBuilder.Create();
             alertDialog.Show();
+        }
+
+        public void OnSuccess(Java.Lang.Object result)
+        {
+            throw new NotImplementedException();
         }
     }
 }
