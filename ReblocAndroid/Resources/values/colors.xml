@@ -9,4 +9,6 @@
 
   <!-- Navigation Drawer -->
   <color name="drawerBackground">#fafafa</color>
+
+	<color name="error">#ff79ff</color>
 </resources>

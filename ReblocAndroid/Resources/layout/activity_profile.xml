@@ -218,7 +218,7 @@
         android:gravity="center"
         android:layout_marginTop="40sp">
         <TextView
-            android:id="@+id/profile_password_text"
+            android:id="@+id/profile_reset_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

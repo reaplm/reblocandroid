@@ -29,6 +29,8 @@ namespace ReblocAndroid
         private TextView name;
         private TextView email;
         private TextView phone;
+        private TextView resetPassword;
+        private TextView deleteAccount;
         private ImageButton editName;
         private ImageButton editPhone;
 
@@ -47,11 +49,14 @@ namespace ReblocAndroid
             name = FindViewById<TextView>(Resource.Id.profile_name_text);
             email = FindViewById<TextView>(Resource.Id.profile_email_text);
             phone = FindViewById<TextView>(Resource.Id.profile_phone_text);
+            resetPassword = FindViewById<TextView>(Resource.Id.profile_reset_password);
             editName = FindViewById<ImageButton>(Resource.Id.profile_name_edit);
             editPhone = FindViewById<ImageButton>(Resource.Id.profile_phone_edit);
 
             editName.Click += EditName_Click; 
             editPhone.Click += EditPhone_Click;
+
+            resetPassword.Click += ResetPassword_Click;
 
             //get current user
             app = FirebaseApp.Instance;
@@ -66,6 +71,79 @@ namespace ReblocAndroid
 
             
         }
+        /// <summary>
+        /// Change Password
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResetPassword_Click(object sender, EventArgs e)
+        {
+            LayoutInflater inflater = LayoutInflater.From(this);
+            View view = inflater.Inflate(Resource.Layout.dialog_reset_password, null);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.SetView(view);
+
+            var newPassword = view.FindViewById<EditText>(Resource.Id.dialog_reset_pass);
+            var passwordRpt = view.FindViewById<EditText>(Resource.Id.dialog_reset_pass_rpt);
+            var passwordError = view.FindViewById<TextView>(Resource.Id.dialog_reset_pass_error);
+
+            alertBuilder.SetTitle("Reset Password")
+                .SetPositiveButton("Submit", delegate
+                {
+                    try
+                    {
+                        var user = auth.CurrentUser.UpdatePassword(newPassword.Text);
+
+                        Toast.MakeText(this, "Done!", ToastLength.Long).Show();
+
+                        //signout
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.MakeText(this, "An error occured. Sorry.", ToastLength.Long).Show();
+                    }
+
+                })
+                .SetNegativeButton("Cancel", delegate
+                {
+                    alertBuilder.Dispose();
+
+                });
+
+            AlertDialog alertDialog = alertBuilder.Create();
+            alertDialog.Show();
+
+            var submit = alertDialog.GetButton((int)DialogButtonType.Positive);
+            submit.Click += delegate
+            {
+                if (!passwordRpt.Text.Equals(newPassword.Text))
+                {
+                    passwordError.Text = "Passwords must match";
+                }
+                else
+                {
+                    //update current user
+                    var user = auth.CurrentUser;
+                    if(user != null)
+                    {
+                        user.UpdatePassword(newPassword.Text);
+
+                        Toast.MakeText(this, "Done!", ToastLength.Long).Show();
+                    }
+                    else { Toast.MakeText(this, "You are not logged in!",ToastLength.Long).Show(); }
+
+                    alertDialog.Dismiss();
+                }
+            };
+
+        }
+
+        private void Submit_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Dialog for editing phone number
         /// </summary>
@@ -160,5 +238,7 @@ namespace ReblocAndroid
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

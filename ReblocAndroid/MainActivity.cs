@@ -137,9 +137,15 @@ namespace ReblocAndroid
             switch (id)
             {
                 case Resource.Id.nav_header:
-                    Intent intent = new Intent(this,typeof(ProfileActivity));
-                    StartActivity(intent);
-                    //Toast.MakeText(this, "You Clicked NavHeader", ToastLength.Long).Show();
+                    if (auth.CurrentUser != null)
+                    {
+                        Intent intent = new Intent(this, typeof(ProfileActivity));
+                        StartActivity(intent);
+                    }
+                    else
+                    {
+                        SignIn();
+                    }
                     break;
             }
         }
