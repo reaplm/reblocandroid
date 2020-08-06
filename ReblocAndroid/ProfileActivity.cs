@@ -24,7 +24,7 @@ using AlertDialog = Android.Support.V7.App.AlertDialog;
 namespace ReblocAndroid
 {
     [Activity(Label = "Account")]
-    public class ProfileActivity : AppCompatActivity, IOnSuccessListener
+    public class ProfileActivity : AppCompatActivity, IOnSuccessListener, IOnCompleteListener
     {
         private TextView name;
         private TextView email;
@@ -38,6 +38,7 @@ namespace ReblocAndroid
         private FirebaseAuth auth;
         private FirebaseFirestore db;
 
+        private string uid;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -50,6 +51,7 @@ namespace ReblocAndroid
             email = FindViewById<TextView>(Resource.Id.profile_email_text);
             phone = FindViewById<TextView>(Resource.Id.profile_phone_text);
             resetPassword = FindViewById<TextView>(Resource.Id.profile_reset_password);
+            deleteAccount = FindViewById<TextView>(Resource.Id.profile_delete_account);
             editName = FindViewById<ImageButton>(Resource.Id.profile_name_edit);
             editPhone = FindViewById<ImageButton>(Resource.Id.profile_phone_edit);
 
@@ -57,6 +59,7 @@ namespace ReblocAndroid
             editPhone.Click += EditPhone_Click;
 
             resetPassword.Click += ResetPassword_Click;
+            deleteAccount.Click += DeleteAccount_Click;
 
             //get current user
             app = FirebaseApp.Instance;
@@ -71,6 +74,70 @@ namespace ReblocAndroid
 
             
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteAccount_Click(object sender, EventArgs e)
+        {
+            LayoutInflater inflater = LayoutInflater.From(this);
+            View view = inflater.Inflate(Resource.Layout.dialog_delete_account, null);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.SetView(view);
+
+            var email = view.FindViewById<EditText>(Resource.Id.dialog_delete_email);
+            var password = view.FindViewById<EditText>(Resource.Id.dialog_delete_password);
+
+
+            alertBuilder.SetTitle("Delete Account")
+                .SetPositiveButton("Submit", delegate
+                {
+                try
+                {
+
+                    //update current user
+                    var user = auth.CurrentUser;
+                    if (user != null)
+                    {
+                            uid = user.Uid;
+
+                            //delete from auth
+                            var reauth = auth.CurrentUser.ReauthenticateAsync(EmailAuthProvider
+                                .GetCredential(email.Text, password.Text)).ContinueWith(task => {
+                                    if (task.IsCompletedSuccessfully)
+                                    {
+                                        Task result = user.Delete().AddOnCompleteListener(this);
+                                        Toast.MakeText(this, "Yeah!", ToastLength.Short).Show();
+                                    }
+                                    else
+                                    {
+                                        Toast.MakeText(this, "Failed to reauthenticate account.", ToastLength.Short).Show();
+                                    }
+
+                                });
+
+                          
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Toast.MakeText(this, "Sorry, an error occured during delete", ToastLength.Short).Show();
+                    }
+                    
+
+                })
+                .SetNegativeButton("No", delegate
+                {
+                    alertBuilder.Dispose();
+
+                });
+
+            AlertDialog alertDialog = alertBuilder.Create();
+            alertDialog.Show();
+        }
+
         /// <summary>
         /// Change Password
         /// </summary>
@@ -238,7 +305,40 @@ namespace ReblocAndroid
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// Delete user listener
+        /// </summary>
+        /// <param name="task"></param>
+        public void OnComplete(Task task)
+        {
+            var result = task.Result;
 
-       
+            if (task.IsSuccessful)
+            {
+                //Delete user details from firestore
+                var docReference = db.Collection("users").Document(uid);
+
+                if (docReference != null)
+                {
+                    var delete = docReference.Delete();
+                    Toast.MakeText(this, "Awesome!", ToastLength.Long).Show();
+                }
+
+            }
+            else
+            {
+                if(task.Exception != null)
+                {
+                    //Create log entry
+                    Toast.MakeText(this, "Failed due to an exception", ToastLength.Long).Show();
+                }
+                else
+                {
+                    //Create a log entry
+                    Toast.MakeText(this, "Couldn't delete. Sorry.", ToastLength.Long).Show();
+                }
+            }
+
+        }
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/dialog_delete_acc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Please provide credentials"
+	/>
+
+	<EditText
+		android:id="@+id/dialog_delete_email"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		  android:hint="Email"
+		 android:textColor="@color/colorPrimaryDark"
+		android:textColorHint="@color/colorAccent"
+		android:backgroundTint="@color/colorPrimaryDark"
+		 android:textCursorDrawable="@drawable/cursor"
+	/>
+	<EditText 
+				android:id="@+id/dialog_delete_password"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		  android:hint="Password"
+		 android:textColor="@color/colorPrimaryDark"
+		android:textColorHint="@color/colorAccent"
+		android:backgroundTint="@color/colorPrimaryDark"
+		 android:textCursorDrawable="@drawable/cursor"
+	/>
+</LinearLayout>
