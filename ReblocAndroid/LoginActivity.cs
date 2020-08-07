@@ -62,7 +62,7 @@ namespace ReblocAndroid
         {
             Intent intent = new Intent(this, typeof(RegisterActivity));
 
-            StartActivityForResult(intent, 1001);
+            StartActivityForResult(intent, REG_REQUEST_ID);
         }
 
         private async void LoginButton_Click(object sender, EventArgs e)
@@ -112,28 +112,49 @@ namespace ReblocAndroid
             base.OnActivityResult(requestCode, resultCode, data);
 
             //RegistrationActivity
-            if (requestCode == 1001)
+            if (requestCode == REG_REQUEST_ID)
             {
                 if (resultCode == RESULT_OK)
                 {
                     bool isLoggedIn = data.GetBooleanExtra("isLoggedIn", false);
 
-                    if (isLoggedIn)
+                    Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+
+                    if (auth.CurrentUser != null)
                     {
-                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
+
+                        Intent result = new Intent();
+
+                        result.PutExtra("isLoggedIn", true);
+                        result.PutExtra("message", "Login Successful!");
+                        SetResult(Result.Ok, result);
+                        Finish();
 
                     }
-                    else
-                    {
-                        //UpdateUI();
-                        Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
-                    }
+             
                 }
                 else if (resultCode == RESULT_CANCELED)
                 {
                     ;
                 }
             }
+        }
+        private void CompleteLogin()
+        {
+            Intent result = new Intent();
+
+            if (auth.CurrentUser != null)
+            {
+                result.PutExtra("isLoggedIn", true);
+                result.PutExtra("message", "Login Successful!");
+                SetResult(Result.Ok, result);
+                Finish();
+            }
+            else //Not logged in
+            {
+                Toast.MakeText(this, "Please Login", ToastLength.Long).Show();
+            }
+
         }
     }
 }
