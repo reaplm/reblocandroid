@@ -17,6 +17,7 @@ using Firebase.Firestore;
 using Android.Support.V4.View;
 using Firebase.Auth;
 using Android.Media;
+using ReblocAndroid.Adapters;
 
 namespace ReblocAndroid
 {
@@ -25,9 +26,12 @@ namespace ReblocAndroid
     {
         private DrawerLayout drawerLayout;
         private RecyclerView mainGrid;
+        private RecyclerView mainHorizontal;
 
         private MainGridAdapter mGridAdapter;
+        private HorizontalRvAdapter hGridAdapter;
         List<GridItem> mainGridItems;
+        List<GridItem> horizontalRvItems;
 
         int[] mainGridIcons = { Resource.Drawable.veges_40, Resource.Drawable.thanksgiving_turkey_40,
             Resource.Drawable.bed_40, Resource.Drawable.restaurant_40, Resource.Drawable.taxi_40,
@@ -37,7 +41,15 @@ namespace ReblocAndroid
             Resource.Drawable.sheep_40,Resource.Drawable.truck_40, Resource.Drawable.tractor_40,
             Resource.Drawable.concert_40
         };
+        int[] horizontalGridIcons = { Resource.Drawable.vector_icon_1, Resource.Drawable.vector_icon_2,
+            Resource.Drawable.vector_icon_3, Resource.Drawable.vector_icon_4, Resource.Drawable.vector_icon_5,
+            Resource.Drawable.vector_icon_6, Resource.Drawable.vector_icon_7, Resource.Drawable.vector_icon_8, 
+            Resource.Drawable.vector_icon_9, Resource.Drawable.vector_icon_10
+        };
 
+        string[] horizontalGridText = { "Fruity Jam", "Fruity Orchards", "Summer Popsicles", "Juicy Smoothies",
+            "Vegan Foods", "Vegetable Food Jar", "Vege Farm", "All Natural", "Green Basket", "Healthy Food"
+        };
         string[] mainGridText = { "Fruit And Veges", "Meat", "Accomodation", "Restaurants", "Cab", "Dairy",
             "Plants/Flowers", "Art", "Beauty", "Pets", "Event Planners", "Construction Workers",
             "Livestock Feed", "Photographers", "Livestock", "Water", "farming", "entertainment"
@@ -80,6 +92,14 @@ namespace ReblocAndroid
             mainGrid.SetLayoutManager(new GridLayoutManager(this, 3));
             mainGrid.SetAdapter( mGridAdapter);
 
+            //Setup Horizontal RV
+            horizontalRvItems = GetHorizontalRvItems();
+
+            hGridAdapter = new HorizontalRvAdapter(horizontalRvItems);
+            mainHorizontal = FindViewById<RecyclerView>(Resource.Id.main_horizontal_rv);
+            mainHorizontal.SetAdapter(hGridAdapter);
+
+
             app = FirebaseApp.InitializeApp(this);
             auth = FirebaseAuth.GetInstance(app);
 
@@ -101,6 +121,21 @@ namespace ReblocAndroid
                 {
                     Name = mainGridText[i],
                     Resource = mainGridIcons[i]
+                });
+            }
+
+            return gridItems;
+        }
+        private List<GridItem> GetHorizontalRvItems()
+        {
+            List<GridItem> gridItems = new List<GridItem>();
+
+            for (int i = 0; i < horizontalGridIcons.Length; i++)
+            {
+                gridItems.Add(new GridItem
+                {
+                    Name = horizontalGridText[i],
+                    Resource = horizontalGridIcons[i]
                 });
             }
 
