@@ -14,6 +14,7 @@ using Android.Views;
 using Android.Widget;
 using Firebase;
 using Firebase.Firestore;
+using Firebase.Storage;
 using Java.Lang;
 using ReblocAndroid.Adapters;
 using ReblocAndroid.Models;
@@ -29,6 +30,7 @@ namespace ReblocAndroid
 
         private FirebaseApp app;
         private FirebaseFirestore db;
+        private FirebaseStorage storage;
 
         private SwipeRefreshLayout swipeRefreshLayout;
         private bool reload = false;
@@ -67,6 +69,7 @@ namespace ReblocAndroid
             vendorAdapter.ItemClick += OnItemClick;
 
             recyclerView = FindViewById<RecyclerView>(Resource.Id.activity_mgrid_rv);
+            recyclerView.SetLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.Vertical));
             recyclerView.SetAdapter(vendorAdapter);
         }
 
@@ -105,7 +108,7 @@ namespace ReblocAndroid
                 return;
             }
 
-            int count = vendors.Count();
+            int count = 1;
             var snapshots = (QuerySnapshot)value;
             foreach (DocumentChange dc in snapshots.DocumentChanges)
             {

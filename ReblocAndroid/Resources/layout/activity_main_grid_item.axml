@@ -3,7 +3,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/desc_card_view"
+    android:id="@+id/mgrid_card"
     android:layout_gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,10 +17,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <ImageView
+            android:id="@+id/mgrid_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5sp"
             android:src="@drawable/image1"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
 		/>
         <GridLayout

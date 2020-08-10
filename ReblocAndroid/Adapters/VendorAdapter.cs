@@ -11,6 +11,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using ReblocAndroid.Models;
+using static ReblocAndroid.Adapters.VendorAdapterViewHolder;
 
 namespace ReblocAndroid.Adapters
 {
@@ -21,6 +22,7 @@ namespace ReblocAndroid.Adapters
         public event EventHandler<VendorAdapterClickEventArgs> ItemClick;
         public event EventHandler<VendorAdapterClickEventArgs> ItemLongClick;
 
+        private Random rand = new Random();
 
         public VendorAdapter(List<Vendor> data)
         {
@@ -36,7 +38,7 @@ namespace ReblocAndroid.Adapters
             View itemView = LayoutInflater.From(parent.Context).
                    Inflate(id, parent, false);
 
-            var vh = new JobsAdapterViewHolder(itemView, OnClick, OnLongClick);
+            var vh = new VendorAdapterViewHolder(itemView, OnClick, OnLongClick);
             return vh;
         }
 
@@ -46,12 +48,24 @@ namespace ReblocAndroid.Adapters
             var item = data[position];
 
             // Replace the contents of the view with that element
-            var holder = viewHolder as JobsAdapterViewHolder;
+            var holder = viewHolder as VendorAdapterViewHolder;
             holder.Name.Text = data[position].Name;
             holder.Location.Text = data[position].Location;
 
-        }
+            //StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams)holder.ItemView.LayoutParameters;
+            holder.Image.LayoutParameters.Height = RandomInt(250, 300);
 
+        }
+        /// <summary>
+        /// Generate random integer between min and max
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        private int RandomInt(int min, int max)
+        {
+            return rand.Next(max - min + min) + min;
+        }
         public override int ItemCount => data.Count;
 
         void OnClick(VendorAdapterClickEventArgs args) => ItemClick?.Invoke(this, args);
@@ -59,21 +73,24 @@ namespace ReblocAndroid.Adapters
 
     }
 
-    public class JobsAdapterViewHolder : RecyclerView.ViewHolder
+    public class VendorAdapterViewHolder : RecyclerView.ViewHolder
     {
         public TextView Name { get; set; }
         public TextView Location { get; set; }
         public TextView PostedDate { get; set; }
+        public ImageView Image { get; set; }
 
-        public JobsAdapterViewHolder(View itemView, Action<VendorAdapterClickEventArgs> clickListener,
+        public VendorAdapterViewHolder(View itemView, Action<VendorAdapterClickEventArgs> clickListener,
                             Action<VendorAdapterClickEventArgs> longClickListener) : base(itemView)
         {
             Name = itemView.FindViewById<TextView>(Resource.Id.mgrid_title);
             Location = itemView.FindViewById<TextView>(Resource.Id.mgrid_location);
+            Image = itemView.FindViewById<ImageView>(Resource.Id.mgrid_image);
 
             itemView.Click += (sender, e) => clickListener(new VendorAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             itemView.LongClick += (sender, e) => longClickListener(new VendorAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
         }
+       
     }
 
     public class VendorAdapterClickEventArgs : EventArgs
