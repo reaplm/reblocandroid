@@ -5,12 +5,16 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Gms.Tasks;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
+using Firebase;
+using Firebase.Storage;
 using ReblocAndroid.Models;
+using Square.Picasso;
 using static ReblocAndroid.Adapters.VendorAdapterViewHolder;
 
 namespace ReblocAndroid.Adapters
@@ -23,6 +27,8 @@ namespace ReblocAndroid.Adapters
         public event EventHandler<VendorAdapterClickEventArgs> ItemLongClick;
 
         private Random rand = new Random();
+
+        private const string directory = "thumbnails";
 
         public VendorAdapter(List<Vendor> data)
         {
@@ -55,7 +61,12 @@ namespace ReblocAndroid.Adapters
             //StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams)holder.ItemView.LayoutParameters;
             holder.Image.LayoutParameters.Height = RandomInt(250, 300);
 
+
+            Picasso.Get().LoggingEnabled = true;
+            Picasso.Get().Load(data[position].Thumbnail).Into(holder.Image);
+
         }
+       
         /// <summary>
         /// Generate random integer between min and max
         /// </summary>
