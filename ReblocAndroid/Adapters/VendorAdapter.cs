@@ -63,7 +63,7 @@ namespace ReblocAndroid.Adapters
 
 
             Picasso.Get().LoggingEnabled = true;
-            Picasso.Get().Load(data[position].Thumbnail).Into(holder.Image);
+            Picasso.Get().Load(data[position].Thumbnail).Error(Resource.Drawable.image_100).Into(holder.Image);
 
         }
        
