@@ -72,10 +72,23 @@ namespace ReblocAndroid
             recyclerView.SetLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.Vertical));
             recyclerView.SetAdapter(vendorAdapter);
         }
-
+        /// <summary>
+        /// Recyclerview itemClick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnItemClick(object sender, VendorAdapterClickEventArgs e)
         {
-            Toast.MakeText(this, "You Cliked!", ToastLength.Short).Show();
+            var item = vendors[e.Position];
+
+            Intent intent = new Intent(this, typeof(VendorDetailActivity));
+            intent.PutExtra("Title", item.Name);
+            intent.PutExtra("Name", item.Name);
+            intent.PutExtra("Location", item.Location);
+            intent.PutExtra("Overview", item.Overview);
+            intent.PutExtra("Image", item.Image);
+
+            StartActivity(intent);
         }
 
         /// <summary>

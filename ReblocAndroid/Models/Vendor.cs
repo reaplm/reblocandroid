@@ -19,6 +19,7 @@ namespace ReblocAndroid.Models
         public string Location { set; get; }
         public string Image { set; get; }
         public string Thumbnail { set; get; }
+        public string Overview { set; get; }
         public List<string> Categories { set; get; }
     }
 }
