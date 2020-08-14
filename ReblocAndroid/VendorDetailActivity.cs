@@ -33,8 +33,11 @@ namespace ReblocAndroid
             FindViewById<TextView>(Resource.Id.vdetail_location).Text = intent.GetStringExtra("Location");
 
             var image = intent.GetStringExtra("Image");
+
             Picasso.Get().LoggingEnabled = true;
-            Picasso.Get().Load(image).Error(Resource.Drawable.image_100).Into(FindViewById<ImageView>(Resource.Id.vdetail_image));
+            Picasso.Get().Load(image).Placeholder(Resource.Drawable.image_100)
+                .Error(Resource.Drawable.image_100)
+                .Into(FindViewById<ImageView>(Resource.Id.vdetail_image));
 
 
         }

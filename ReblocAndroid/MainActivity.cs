@@ -33,14 +33,6 @@ namespace ReblocAndroid
         List<GridItem> mainGridItems;
         List<GridItem> horizontalRvItems;
 
-        int[] mainGridIcons = { Resource.Drawable.veges_40, Resource.Drawable.thanksgiving_turkey_40,
-            Resource.Drawable.bed_40, Resource.Drawable.restaurant_40, Resource.Drawable.taxi_40,
-            Resource.Drawable.milk_bottle_40, Resource.Drawable.potted_plant_40, Resource.Drawable.easel_40,
-            Resource.Drawable.facial_mask_40, Resource.Drawable.pet_40, Resource.Drawable.wedding_cake_40,
-            Resource.Drawable.worker_40, Resource.Drawable.feeding_chicken_40, Resource.Drawable.images_40,
-            Resource.Drawable.sheep_40,Resource.Drawable.truck_40, Resource.Drawable.tractor_40,
-            Resource.Drawable.concert_40
-        };
         int[] horizontalGridIcons = { Resource.Drawable.vector_icon_1, Resource.Drawable.vector_icon_2,
             Resource.Drawable.vector_icon_3, Resource.Drawable.vector_icon_4, Resource.Drawable.vector_icon_5,
             Resource.Drawable.vector_icon_6, Resource.Drawable.vector_icon_7, Resource.Drawable.vector_icon_8, 
@@ -110,19 +102,33 @@ namespace ReblocAndroid
             //Setup UI
             UpdateUI();
         }
-
+        /// <summary>
+        /// Main grid
+        /// </summary>
+        /// <returns></returns>
         private List<GridItem> GetGridItems()
         {
             List<GridItem> gridItems = new List<GridItem>();
 
-            for (int i = 0; i < mainGridIcons.Length; i++)
-            {
-                gridItems.Add(new GridItem
-                {
-                    Name = mainGridText[i],
-                    Resource = mainGridIcons[i]
-                });
-            }
+            gridItems.Add(new GridItem { Name = "Fruit And Veges", Resource = Resource.Drawable.veges_40, Category = "produce" });
+            gridItems.Add(new GridItem { Name = "Meat", Resource = Resource.Drawable.thanksgiving_turkey_40, Category =  "meat" });
+            gridItems.Add(new GridItem { Name = "Accomodation", Resource = Resource.Drawable.bed_40, Category =  "accomodation" });
+            gridItems.Add(new GridItem { Name = "Restaurants", Resource = Resource.Drawable.restaurant_40, Category = "restaurants"});
+            gridItems.Add(new GridItem { Name = "Dairy", Resource = Resource.Drawable.milk_bottle_40, Category = "dairy" });
+            gridItems.Add(new GridItem { Name = "Cab", Resource = Resource.Drawable.taxi_40, Category = "transport" });
+            gridItems.Add(new GridItem { Name = "Plants/Flowers", Resource = Resource.Drawable.potted_plant_40, Category =  "flowers"});
+            gridItems.Add(new GridItem { Name = "Art", Resource = Resource.Drawable.easel_40, Category = "art" });
+            gridItems.Add(new GridItem { Name = "Beauty", Resource = Resource.Drawable.facial_mask_40, Category =  "beauty" });
+            gridItems.Add(new GridItem { Name = "Pets", Resource = Resource.Drawable.worker_40, Category = "pets" });
+            gridItems.Add(new GridItem { Name = "Event Planners", Resource = Resource.Drawable.wedding_cake_40, Category = "events"});
+            gridItems.Add(new GridItem { Name = "Construction Workers", Resource = Resource.Drawable.worker_40, Category = "construction"});
+            gridItems.Add(new GridItem { Name = "Livestock Feed", Resource = Resource.Drawable.feeding_chicken_40, Category = "feeds"});
+            gridItems.Add(new GridItem { Name = "Photographers", Resource = Resource.Drawable.images_40, Category = "photography" });
+            gridItems.Add(new GridItem { Name = "Livestock", Resource = Resource.Drawable.tractor_40, Category = "livestock" });
+            gridItems.Add(new GridItem { Name = "Water", Resource = Resource.Drawable.truck_40, Category = "water" });
+            gridItems.Add(new GridItem { Name = "Farming", Resource = Resource.Drawable.tractor_40, Category =  "farming" });
+            gridItems.Add(new GridItem { Name = "Entertainment", Resource = Resource.Drawable.concert_40, Category = "entertainment" });
+
 
             return gridItems;
         }
@@ -153,6 +159,7 @@ namespace ReblocAndroid
 
             Intent intent = new Intent(this, typeof(MainGridDetailActivity));
             intent.PutExtra("Name", item.Name);
+            intent.PutExtra("category", item.Category);
 
             StartActivity(intent);
         }

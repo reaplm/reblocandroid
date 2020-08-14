@@ -5,6 +5,7 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Gms.Tasks;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V4.Widget;
@@ -44,17 +45,19 @@ namespace ReblocAndroid
 
             Intent intent = Intent;
             Title = intent.GetStringExtra("Name");
-            //SetActionBar(android.)
+           
 
             app = FirebaseApp.Instance;
             db = FirebaseFirestore.GetInstance(app);
+
+            string category = intent.GetStringExtra("category");
 
             //Setup Views
             swipeRefreshLayout = (SwipeRefreshLayout)FindViewById(Resource.Id.refreshView);
             swipeRefreshLayout.Refresh += delegate (object sender, System.EventArgs e)
             {
                 reload = true;
-                FetchCollection();
+                FetchCollection(category);
             };
 
             swipeRefreshLayout.Post(() => {
@@ -64,7 +67,7 @@ namespace ReblocAndroid
 
             reload = true;
             vendors = new List<Vendor>();
-            FetchCollection();
+            FetchCollection(category);
             vendorAdapter = new VendorAdapter(vendors);
             vendorAdapter.ItemClick += OnItemClick;
 
@@ -94,13 +97,14 @@ namespace ReblocAndroid
         /// <summary>
         /// Fetch collection from firestore database
         /// </summary>
-        private void FetchCollection()
+        private void FetchCollection(string category)
         {
-
             try
             {
                 CollectionReference collection = db.Collection("vendors");
-                collection.AddSnapshotListener(this);
+                collection.WhereEqualTo("Category", category).AddSnapshotListener(this);
+                
+                //collection.AddSnapshotListener(this);
             }
             catch (System.Exception ex)
             {
@@ -222,5 +226,7 @@ namespace ReblocAndroid
 
             return newObject;
         }
+
+     
     }
 }

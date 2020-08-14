@@ -16,5 +16,6 @@ namespace ReblocAndroid.Models
     {
         public string Name { set; get; }
         public int Resource { set; get; }
+        public string Category { set; get; }
     }
 }
