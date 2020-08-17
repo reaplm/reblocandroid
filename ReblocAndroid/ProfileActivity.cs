@@ -24,7 +24,7 @@ using AlertDialog = Android.Support.V7.App.AlertDialog;
 namespace ReblocAndroid
 {
     [Activity(Label = "Account")]
-    public class ProfileActivity : AppCompatActivity, IOnSuccessListener, IOnCompleteListener
+    public class ProfileActivity : AppCompatActivity, IOnSuccessListener, IOnCompleteListener, IDialogInterfaceOnClickListener
     {
         private TextView name;
         private TextView email;
@@ -33,6 +33,7 @@ namespace ReblocAndroid
         private TextView deleteAccount;
         private ImageButton editName;
         private ImageButton editPhone;
+        private ImageView profilePic;
 
         private FirebaseApp app;
         private FirebaseAuth auth;
@@ -54,12 +55,14 @@ namespace ReblocAndroid
             deleteAccount = FindViewById<TextView>(Resource.Id.profile_delete_account);
             editName = FindViewById<ImageButton>(Resource.Id.profile_name_edit);
             editPhone = FindViewById<ImageButton>(Resource.Id.profile_phone_edit);
+            profilePic = FindViewById<ImageView>(Resource.Id.profile_pic);
 
             editName.Click += EditName_Click; 
             editPhone.Click += EditPhone_Click;
 
             resetPassword.Click += ResetPassword_Click;
             deleteAccount.Click += DeleteAccount_Click;
+            profilePic.Click += ProfilePic_Click;
 
             //get current user
             app = FirebaseApp.Instance;
@@ -74,6 +77,20 @@ namespace ReblocAndroid
 
             
         }
+
+        private void ProfilePic_Click(object sender, EventArgs e)
+        {
+            //Open Dialog
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+
+            alertBuilder.SetTitle("Add Photo");
+            alertBuilder.SetItems(Resource.Array.upload_photo, this);
+
+            AlertDialog alertDialog = alertBuilder.Create();
+            alertDialog.Show();
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -339,6 +356,26 @@ namespace ReblocAndroid
                 }
             }
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dialog"></param>
+        /// <param name="which"></param>
+        public void OnClick(IDialogInterface dialog, int position)
+        {
+            switch (position)
+            {
+                case 0:
+                    Toast.MakeText(this, "You clicked position 0", ToastLength.Long).Show();
+                    break;
+                case 1:
+                    Toast.MakeText(this, "You clicked position 1", ToastLength.Long).Show();
+                    break;
+                case 2:
+                    dialog.Dismiss();
+                    break;
+            }
         }
     }
 }
