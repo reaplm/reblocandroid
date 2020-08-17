@@ -28,6 +28,7 @@ namespace ReblocAndroid
         private EditText password;
         private Button registerButton;
         private CheckBox rememberMeCheck;
+        private RadioGroup userType;
 
         private FirebaseApp app;
         private FirebaseAuth auth;
@@ -49,6 +50,7 @@ namespace ReblocAndroid
             phone = FindViewById<EditText>(Resource.Id.register_phone);
             registerButton = FindViewById<Button>(Resource.Id.register_button);
             rememberMeCheck = FindViewById<CheckBox>(Resource.Id.register_rememberme);
+            userType = FindViewById<RadioGroup>(Resource.Id.register_radiogroup);
 
             registerButton.Click += RegisterButton_Click;
         }
@@ -81,6 +83,17 @@ namespace ReblocAndroid
                     dictionary.Add("LName", lName.Text);
                     dictionary.Add("Phone", phone.Text);
                     dictionary.Add("Display", fName.Text);
+
+                    var id = userType.CheckedRadioButtonId;
+
+                    if(id == Resource.Id.register_radio_vendor)
+                    {
+                        dictionary.Add("Type", "vendor");
+                    }
+                    else
+                    {
+                        dictionary.Add("Type", "customer");
+                    }
 
                     firestore.Collection("users").Document(auth.CurrentUser.Uid).Set(dictionary);
 

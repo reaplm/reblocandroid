@@ -8,7 +8,27 @@
 	android:gravity="bottom"
 	>
 
-	
+	<RadioGroup 
+		android:id="@+id/register_radiogroup"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:orientation="horizontal"
+		>
+		<RadioButton android:id="@+id/register_radio_customer"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Customer"
+			android:textColor="@color/colorPrimaryDark"
+			android:checked="true"/>
+		<RadioButton android:id="@+id/register_radio_vendor"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Vendor"
+			android:textColor="@color/colorPrimaryDark"
+			/>
+	</RadioGroup>
+
 	<EditText 
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
