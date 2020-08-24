@@ -1,25 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Gms.Tasks;
+using Android.Graphics;
 using Android.Media;
 using Android.OS;
+using Android.Provider;
 using Android.Runtime;
+using Android.Support.V4.Content;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Firestore;
+using Firebase.Storage;
+using Java.IO;
+using Java.Util;
 using Org.Apache.Http.Authentication;
 using ReblocAndroid.Adapters;
 using ReblocAndroid.Models;
 using AlertDialog = Android.Support.V7.App.AlertDialog;
+using File = Java.IO.File;
 
 namespace ReblocAndroid
 {
@@ -38,8 +49,13 @@ namespace ReblocAndroid
         private FirebaseApp app;
         private FirebaseAuth auth;
         private FirebaseFirestore db;
+        private FirebaseStorage storage;
 
         private string uid;
+
+        const int TAKE_PHOTO_REQ = 100;
+
+        private string imagePath;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -68,6 +84,7 @@ namespace ReblocAndroid
             app = FirebaseApp.Instance;
             auth = FirebaseAuth.GetInstance(app);
             db = FirebaseFirestore.GetInstance(app);
+            storage = FirebaseStorage.GetInstance(app);
 
             var user = auth.CurrentUser;
             name.Text = "Pearl Molefe";
@@ -317,10 +334,13 @@ namespace ReblocAndroid
             AlertDialog alertDialog = alertBuilder.Create();
             alertDialog.Show();
         }
-
+        /// <summary>
+        /// Success for upload of profile image
+        /// </summary>
+        /// <param name="result"></param>
         public void OnSuccess(Java.Lang.Object result)
         {
-            throw new NotImplementedException();
+            Toast.MakeText(this, "Profile changed successfully!", ToastLength.Long).Show();
         }
         /// <summary>
         /// Delete user listener
@@ -367,7 +387,7 @@ namespace ReblocAndroid
             switch (position)
             {
                 case 0:
-                    Toast.MakeText(this, "You clicked position 0", ToastLength.Long).Show();
+                    UploadFromCamera();
                     break;
                 case 1:
                     Toast.MakeText(this, "You clicked position 1", ToastLength.Long).Show();
@@ -375,6 +395,82 @@ namespace ReblocAndroid
                 case 2:
                     dialog.Dismiss();
                     break;
+            }
+        }
+
+        private void UploadFromCamera()
+        {
+
+            try
+            {
+                    Intent intent = new Intent(MediaStore.ActionImageCapture);
+                    StartActivityForResult(intent, TAKE_PHOTO_REQ);
+       
+            }
+
+            catch(Exception ex)
+            {
+                System.Console.WriteLine("Error taking profile picture: " + ex); 
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestCode"></param>
+        /// <param name="resultCode"></param>
+        /// <param name="data"></param>
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            //LoginActivity
+            if (requestCode == TAKE_PHOTO_REQ && data != null)
+            {
+                if (resultCode == Result.Ok)
+                {
+                   
+
+                    try
+                    {
+                        Bitmap srcBitmap = (Bitmap)data.Extras.Get("data");
+                        profilePic.SetImageBitmap(srcBitmap);
+
+                        var sdpath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
+                        var path = System.IO.Path.Combine(sdpath, UUID.RandomUUID().ToString());
+
+                        var stream = new FileStream(path, FileMode.Create);
+                        srcBitmap.Compress(Bitmap.CompressFormat.Png, 60, stream);                        
+         
+                        //Upload to firestore
+                        var task = storage.Reference.Child("profile/").Child(auth.Uid).PutFile(Android.Net.Uri.FromFile(new File(path)));
+
+                        if (task.IsSuccessful) {
+                            Toast.MakeText(this, "Profile Updated!", ToastLength.Long).Show();
+                        }
+                        else
+                        {
+                            Toast.MakeText(this, "Failed to update profile", ToastLength.Long).Show();
+                        }
+                        stream.Flush();
+                        stream.Close();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Console.WriteLine("Error saving profile image: " + ex);
+                    }
+                    finally
+                    {
+                        
+
+                    }
+
+                }
+                else if (resultCode == Result.Canceled)
+                {
+                    ;
+                }
             }
         }
     }
