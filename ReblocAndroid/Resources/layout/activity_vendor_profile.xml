@@ -26,10 +26,10 @@
                 <ImageView
                     android:id="@+id/vprofile_image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="180dp"
                     android:layout_margin="5sp"
                     android:src="@drawable/add_image_100"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:layout_column="0"
                     android:layout_row="0"
@@ -52,14 +52,18 @@
                     android:id="@+id/vprofile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left | center_vertical"
-                    android:text="Name Title"
-                    android:textSize="20sp"
                     android:maxLines="1"
                     android:layout_column="1"
                     android:layout_row="1"
-                   android:layout_marginLeft="20dp"
-								/>
+                    android:text="Name"
+                     android:textSize="20sp"
+                    android:layout_columnSpan="1"
+                    android:layout_columnWeight="1"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginLeft="10sp"
+ 	            />
+
+
                  <LinearLayout
                     android:orientation="horizontal"
                     android:layout_height="wrap_content"
@@ -81,7 +85,7 @@
                     android:tint="@color/colorPrimaryDark"
 				/>
                     <TextView
-                        android:id="@+id/profile_location_text"
+                        android:id="@+id/vprofile_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left | center_vertical"
@@ -93,10 +97,10 @@
                 </LinearLayout>
 
                 <ImageButton
-                    android:id="@+id/profile_name_edit"
+                    android:id="@+id/vprofile_name_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right | center_vertical"
+                    android:layout_gravity="right | top"
                     android:src="@drawable/edit_24"
                     android:layout_column="2"
                     android:layout_row="1"
@@ -121,8 +125,8 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:rowCount="3"
-                android:columnCount="3"
+                android:rowCount="2"
+                android:columnCount="2"
                 android:paddingBottom="20sp">
                 <TextView
                     android:layout_width="wrap_content"
@@ -133,8 +137,9 @@
                     android:maxLines="1"
                     android:layout_column="0"
                     android:layout_row="0"
+                    android:layout_columnSpan="2"
 								/>
-               <ImageButton
+                <ImageButton
                     android:id="@+id/vprofile_summary_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -146,19 +151,15 @@
                     android:paddingRight="10dp"
                     android:background="@android:color/transparent"
 				/>
-                <EditText
+
+                <TextView
                     android:id="@+id/vprofile_summary"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:layout_column="0"
                     android:layout_row="1"
                     android:layout_columnSpan="2"
-                    android:hint="Summary"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textColorHint="@color/colorAccent"
-                    android:backgroundTint="@color/colorPrimaryDark"
-                    android:textCursorDrawable="@drawable/cursor"
-
+                    android:hint="@string/paragraph"
  	            />
             </GridLayout>
         </android.support.v7.widget.CardView>
@@ -171,24 +172,21 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp">
             <GridLayout
+                android:id="@+id/vprofile_category_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:rowCount="2"
                 android:columnCount="3"
                 android:paddingBottom="20sp">
-
-
-                <TextView
+                <Spinner
                     android:id="@+id/vprofile_category"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left | center_vertical"
-                    android:text="Category"
+                    android:prompt="Category"
                     android:textSize="20sp"
-                    android:maxLines="1"
-                    android:layout_column="1"
-                    android:layout_row="1"
-								/>
+                    android:layout_column="0"
+                    android:layout_row="0"/>
 
 
             </GridLayout>
@@ -264,7 +262,7 @@
 								/>
 
                     <TextView
-                        android:id="@+id/vprofile_phone_text"
+                        android:id="@+id/vprofile_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
@@ -296,6 +294,7 @@
                     android:layout_columnWeight="1"
                     android:layout_marginLeft="5dp">
                     <TextView
+                        android:id="@+id/vprofile_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
