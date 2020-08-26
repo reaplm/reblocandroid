@@ -18,11 +18,13 @@ using Android.Support.V4.View;
 using Firebase.Auth;
 using Android.Media;
 using ReblocAndroid.Adapters;
+using System.Linq;
+using Square.Picasso;
 
 namespace ReblocAndroid
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener, View.IOnClickListener
+    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener, View.IOnClickListener, IEventListener
     {
         private DrawerLayout drawerLayout;
         private RecyclerView mainGrid;
@@ -94,6 +96,10 @@ namespace ReblocAndroid
 
             app = FirebaseApp.InitializeApp(this);
             auth = FirebaseAuth.GetInstance(app);
+            db = FirebaseFirestore.GetInstance(app);
+            //Fetch user details
+            
+            GetUserDetails();
 
             //Setup Navigation View
             SetNavigationViewListener();
@@ -102,6 +108,16 @@ namespace ReblocAndroid
             //Setup UI
             UpdateUI();
         }
+
+        private void GetUserDetails()
+        {
+           
+
+            CollectionReference collection = db.Collection("users");
+            collection.WhereEqualTo("Uid", auth.Uid).AddSnapshotListener(this);
+
+        }
+
         /// <summary>
         /// Main grid
         /// </summary>
@@ -278,12 +294,47 @@ namespace ReblocAndroid
             if (auth.CurrentUser != null)
             {
                 menuItem.SetTitle("Log Out");
-                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = auth.CurrentUser.Email;
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName;
+
+                
+
             }
             else
             {
                 menuItem.SetTitle("Log In");
                 navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = "";
+            }
+        }
+
+        public void OnEvent(Java.Lang.Object value, FirebaseFirestoreException error)
+        {
+
+            if (error != null)
+            {
+                Toast.MakeText(this, "Failed to fetch user details", ToastLength.Long).Show();
+                return;
+            }
+
+            var snapshot = (QuerySnapshot)value;
+            if (snapshot.Documents.Count == 1)
+            {
+                var dictionary = snapshot.Documents.First().Data;
+
+                Global.FName = (string)dictionary["FName"];
+                Global.LName = (string)dictionary["LName"];
+                Global.PhotoUrl = (string)dictionary["PhotoUrl"];
+                Global.Phone = (string)dictionary["Phone"];
+
+                //Update drawer
+                NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);
+                var navHeader = navigationView.GetHeaderView(0);
+
+                Picasso.Get().LoggingEnabled = true;
+                Picasso.Get().Load(Global.PhotoUrl).Placeholder(Resource.Drawable.female_user_256)
+                    .Error(Resource.Drawable.female_user_256)
+                    .Into(navHeader.FindViewById<ImageView>(Resource.Id.nav_header_image));
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName == null ? auth.CurrentUser.Email : Global.FName;
+
             }
         }
     }

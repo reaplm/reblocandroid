@@ -71,6 +71,7 @@
     <Compile Include="Adapters\HorizontalRvAdapter.cs" />
     <Compile Include="Adapters\MainGridAdapter.cs" />
     <Compile Include="Adapters\VendorAdapter.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="LoginActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainGridDetailActivity.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VendorDetailActivity.cs" />
+    <Compile Include="VendorProfileActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <GoogleServicesJson Include="google-services.json" />
