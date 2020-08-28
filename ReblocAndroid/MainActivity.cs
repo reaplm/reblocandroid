@@ -304,14 +304,19 @@ namespace ReblocAndroid
             {
                 menuItem.SetTitle("Log Out");
                 navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName;
+               
 
-                
 
             }
             else
             {
                 menuItem.SetTitle("Log In");
                 navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = "";
+
+                Global.FName = string.Empty;
+                Global.LName = string.Empty;
+                Global.Phone = string.Empty;
+                Global.UserType = string.Empty;
             }
         }
 
@@ -343,7 +348,7 @@ namespace ReblocAndroid
                 Picasso.Get().Load(Global.PhotoUrl).Placeholder(Resource.Drawable.female_user_256)
                     .Error(Resource.Drawable.female_user_256)
                     .Into(navHeader.FindViewById<ImageView>(Resource.Id.nav_header_image));
-                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName == null ? auth.CurrentUser.Email : Global.FName;
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName == string.Empty ? auth.CurrentUser.Email : Global.FName;
 
             }
         }
