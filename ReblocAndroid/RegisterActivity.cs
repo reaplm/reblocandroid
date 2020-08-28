@@ -89,13 +89,14 @@ namespace ReblocAndroid
                     if(id == Resource.Id.register_radio_vendor)
                     {
                         dictionary.Add("Type", "vendor");
+                        firestore.Collection("vendors").Document(auth.CurrentUser.Uid).Set(dictionary);
                     }
                     else
                     {
                         dictionary.Add("Type", "customer");
+                        firestore.Collection("customers").Document(auth.CurrentUser.Uid).Set(dictionary);
+                        
                     }
-
-                    firestore.Collection("users").Document(auth.CurrentUser.Uid).Set(dictionary);
 
                     result.PutExtra("isLoggedIn", true);
                     result.PutExtra("message", "Registration Successful!");
