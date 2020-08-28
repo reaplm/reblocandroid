@@ -197,8 +197,17 @@ namespace ReblocAndroid
                 case Resource.Id.nav_header:
                     if (auth.CurrentUser != null)
                     {
-                        Intent intent = new Intent(this, typeof(ProfileActivity));
-                        StartActivity(intent);
+                        if(Global.UserType == "vendor")
+                        {
+                            Intent intent = new Intent(this, typeof(VendorProfileActivity));
+                            StartActivity(intent);
+                        }
+                        else 
+                        {
+                            Intent intent = new Intent(this, typeof(ProfileActivity));
+                            StartActivity(intent);
+                        }
+                        
                     }
                     else
                     {
@@ -322,8 +331,9 @@ namespace ReblocAndroid
 
                 Global.FName = (string)dictionary["FName"];
                 Global.LName = (string)dictionary["LName"];
-                Global.PhotoUrl = (string)dictionary["PhotoUrl"];
+                //Global.PhotoUrl = (string)dictionary["PhotoUrl"];
                 Global.Phone = (string)dictionary["Phone"];
+                Global.UserType = (string)dictionary["Type"];
 
                 //Update drawer
                 NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);

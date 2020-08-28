@@ -47,7 +47,7 @@ namespace ReblocAndroid
 
             //card3
             category = FindViewById<Spinner>(Resource.Id.vprofile_category);
-            var adapter = ArrayAdapter.CreateFromResource(
+            var adapter = ArrayAdapter<string>.CreateFromResource(
             this, Resource.Array.vendor_category, Android.Resource.Layout.SimpleSpinnerItem);
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
             category.Adapter = adapter;
