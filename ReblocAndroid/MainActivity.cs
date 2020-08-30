@@ -20,6 +20,7 @@ using Android.Media;
 using ReblocAndroid.Adapters;
 using System.Linq;
 using Square.Picasso;
+using Java.IO;
 
 namespace ReblocAndroid
 {
@@ -97,8 +98,8 @@ namespace ReblocAndroid
             app = FirebaseApp.InitializeApp(this);
             auth = FirebaseAuth.GetInstance(app);
             db = FirebaseFirestore.GetInstance(app);
-            //Fetch user details
-            
+
+            //Fetch user details from server
             GetUserDetails();
 
             //Setup Navigation View
@@ -108,13 +109,17 @@ namespace ReblocAndroid
             //Setup UI
             UpdateUI();
         }
-
+        /// <summary>
+        /// Fetch user's account detailsfrom firebase
+        /// </summary>
         private void GetUserDetails()
         {
-           
-
-            CollectionReference collection = db.Collection("users");
-            collection.WhereEqualTo("Uid", auth.Uid).AddSnapshotListener(this);
+            //User is logged in
+            if(auth != null)
+            {
+                CollectionReference collection = db.Collection("users");
+                collection.WhereEqualTo("Uid", auth.Uid).AddSnapshotListener(this);
+            }
 
         }
 
@@ -274,7 +279,7 @@ namespace ReblocAndroid
 
                     if (isLoggedIn)
                     {
-                        UpdateUI();
+                        GetUserDetails();
                         Toast.MakeText(this, data.GetStringExtra("message"), ToastLength.Long).Show();
                     }
                     else
@@ -303,23 +308,36 @@ namespace ReblocAndroid
             if (auth.CurrentUser != null)
             {
                 menuItem.SetTitle("Log Out");
-                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName;
-               
 
+                //Update navigation header
+                Picasso.Get().LoggingEnabled = true;
+                Picasso.Get().Load(new File(Global.PhotoUrl)).Placeholder(Resource.Drawable.female_user_256)
+                    .Error(Resource.Drawable.female_user_256)
+                    .Into(navHeader.FindViewById<ImageView>(Resource.Id.nav_header_image));
+
+                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName == string.Empty ?
+                    auth.CurrentUser.Email : Global.FName;
 
             }
             else
             {
                 menuItem.SetTitle("Log In");
                 navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = "";
+                navHeader.FindViewById<ImageView>(Resource.Id.nav_header_image).SetImageResource(Resource.Drawable.female_user_256);
 
                 Global.FName = string.Empty;
                 Global.LName = string.Empty;
                 Global.Phone = string.Empty;
+                Global.PhotoUrl = string.Empty;
                 Global.UserType = string.Empty;
+
             }
         }
-
+        /// <summary>
+        /// Listener for FetchUserDetails
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="error"></param>
         public void OnEvent(Java.Lang.Object value, FirebaseFirestoreException error)
         {
 
@@ -334,22 +352,19 @@ namespace ReblocAndroid
             {
                 var dictionary = snapshot.Documents.First().Data;
 
-                Global.FName = (string)dictionary["FName"];
-                Global.LName = (string)dictionary["LName"];
-                //Global.PhotoUrl = (string)dictionary["PhotoUrl"];
-                Global.Phone = (string)dictionary["Phone"];
-                Global.UserType = (string)dictionary["Type"];
+                //Update global variables
+                Global.FName = dictionary.ContainsKey("FName") ? (string)dictionary["FName"] : string.Empty;
+                Global.LName = dictionary.ContainsKey("LName") ? (string)dictionary["LName"] : string.Empty;
+                Global.PhotoUrl = dictionary.ContainsKey("PhotoUrl") ? (string)dictionary["PhotoUrl"] : string.Empty;
+                Global.Phone = dictionary.ContainsKey("Phone") ? (string)dictionary["Phone"] : string.Empty;
+                Global.UserType = dictionary.ContainsKey("Type") ? (string)dictionary["Type"] : "customer";
 
-                //Update drawer
-                NavigationView navigationView = drawerLayout.FindViewById<NavigationView>(Resource.Id.nav_view);
-                var navHeader = navigationView.GetHeaderView(0);
+                UpdateUI();
 
-                Picasso.Get().LoggingEnabled = true;
-                Picasso.Get().Load(Global.PhotoUrl).Placeholder(Resource.Drawable.female_user_256)
-                    .Error(Resource.Drawable.female_user_256)
-                    .Into(navHeader.FindViewById<ImageView>(Resource.Id.nav_header_image));
-                navHeader.FindViewById<TextView>(Resource.Id.nav_header_text).Text = Global.FName == string.Empty ? auth.CurrentUser.Email : Global.FName;
-
+            }
+            else
+            {
+                Toast.MakeText(this, "There was an error fetching user details", ToastLength.Long).Show();
             }
         }
     }

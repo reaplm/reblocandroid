@@ -29,6 +29,7 @@ using Java.Util;
 using Org.Apache.Http.Authentication;
 using ReblocAndroid.Adapters;
 using ReblocAndroid.Models;
+using Square.Picasso;
 using AlertDialog = Android.Support.V7.App.AlertDialog;
 using File = Java.IO.File;
 
@@ -37,14 +38,11 @@ namespace ReblocAndroid
     [Activity(Label = "Account")]
     public class ProfileActivity : AppCompatActivity, IOnSuccessListener, IOnCompleteListener, IDialogInterfaceOnClickListener
     {
-        private TextView name;
-        private TextView email;
-        private TextView phone;
+       
         private TextView resetPassword;
-        private TextView deleteAccount;
-        private ImageButton editName;
-        private ImageButton editPhone;
+        private TextView displayName;
         private ImageView profilePic;
+        private ListView listView;
 
         private FirebaseApp app;
         private FirebaseAuth auth;
@@ -64,35 +62,37 @@ namespace ReblocAndroid
             // Create your application here
             SetContentView(Resource.Layout.activity_profile);
 
-            name = FindViewById<TextView>(Resource.Id.profile_name_text);
-            email = FindViewById<TextView>(Resource.Id.profile_email_text);
-            phone = FindViewById<TextView>(Resource.Id.profile_phone_text);
-            resetPassword = FindViewById<TextView>(Resource.Id.profile_reset_password);
-            deleteAccount = FindViewById<TextView>(Resource.Id.profile_delete_account);
-            editName = FindViewById<ImageButton>(Resource.Id.profile_name_edit);
-            editPhone = FindViewById<ImageButton>(Resource.Id.profile_phone_edit);
-            profilePic = FindViewById<ImageView>(Resource.Id.profile_pic);
-
-            editName.Click += EditName_Click; 
-            editPhone.Click += EditPhone_Click;
-
-            resetPassword.Click += ResetPassword_Click;
-            deleteAccount.Click += DeleteAccount_Click;
-            profilePic.Click += ProfilePic_Click;
-
-            //get current user
+            //Setup firebase and firestore
             app = FirebaseApp.Instance;
             auth = FirebaseAuth.GetInstance(app);
             db = FirebaseFirestore.GetInstance(app);
             storage = FirebaseStorage.GetInstance(app);
 
-            var user = auth.CurrentUser;
-            name.Text = "Pearl Molefe";
-            email.Text = user.Email;
-            phone.Text = "71406569";
+            var name = Global.FName == string.Empty ? auth.CurrentUser.Email : Global.FName + " " + Global.LName;
+            //ListView
+            listView = FindViewById<ListView>(Resource.Id.profile_listview);
+            List<ListItem> listData = new List<ListItem>
+            {
+                new ListItem { Heading = "NAME", SubHeading = name },
+                new ListItem { Heading = "EMAIL", SubHeading = auth.CurrentUser.Email },
+                new ListItem { Heading = "PHONE", SubHeading = Global.Phone == string.Empty ? "" : Global.Phone },
+                new ListItem { Heading = "ACCOUNT", SubHeading = Global.UserType == string.Empty ? "Customer" : Global.UserType }
+            };
+            listView.Adapter = new ListAdapter(this, listData);
+            listView.AddFooterView(new View(this));
 
 
-            
+            displayName = FindViewById<TextView>(Resource.Id.profile_name);
+            displayName.Text = name;
+
+            profilePic = FindViewById<ImageView>(Resource.Id.profile_pic);
+            Picasso.Get().LoggingEnabled = true;
+            Picasso.Get().Load(new File(Global.PhotoUrl)).Placeholder(Resource.Drawable.female_user_256)
+                .Error(Resource.Drawable.female_user_256)
+                .Into(profilePic);
+
+            profilePic.Click += ProfilePic_Click;
+
         }
 
         private void ProfilePic_Click(object sender, EventArgs e)
@@ -259,7 +259,7 @@ namespace ReblocAndroid
             alertBuilder.SetView(view);
 
             var editPhone = view.FindViewById<EditText>(Resource.Id.dialog_edit_phone);
-            editPhone.Text = phone.Text;
+           // editPhone.Text = phone.Text;
 
             alertBuilder.SetTitle("Edit Phone")
                 .SetPositiveButton("Submit", delegate
@@ -293,9 +293,9 @@ namespace ReblocAndroid
             var fName = view.FindViewById<EditText>(Resource.Id.dialog_edit_fname);
             var lName = view.FindViewById<EditText>(Resource.Id.dialog_edit_lname);
 
-            string[] fullName = name.Text.Split(" ");
-            fName.Text = fullName[0];
-            lName.Text = fullName[1];
+            //string[] fullName = name.Text.Split(" ");
+            //fName.Text = fullName[0];
+            //lName.Text = fullName[1];
 
             alertBuilder.SetTitle("Edit Name")
                 .SetPositiveButton("Submit", delegate
@@ -435,25 +435,31 @@ namespace ReblocAndroid
                     {
                         Bitmap srcBitmap = (Bitmap)data.Extras.Get("data");
                         profilePic.SetImageBitmap(srcBitmap);
+                        
+                        var sdpath = Application.Context.GetExternalFilesDir(null).AbsolutePath;
 
-                        var sdpath = Android.App.Application.Context.GetExternalFilesDir("").AbsolutePath;
-                        var path = System.IO.Path.Combine(sdpath, UUID.RandomUUID().ToString());
-
-                        var stream = new FileStream(path, FileMode.Create);
-                        srcBitmap.Compress(Bitmap.CompressFormat.Png, 60, stream);                        
-         
-                        //Upload to firestore
-                        var task = storage.Reference.Child("profile/").Child(auth.Uid).PutFile(Android.Net.Uri.FromFile(new File(path)));
-
-                        if (task.IsSuccessful) {
-                            Toast.MakeText(this, "Profile Updated!", ToastLength.Long).Show();
-                        }
-                        else
+                        File folder = new File(sdpath + File.Separator + "Profile Images");
+                        
+                        if (!folder.Exists())
                         {
-                            Toast.MakeText(this, "Failed to update profile", ToastLength.Long).Show();
+                            folder.Mkdirs();
                         }
+  
+                        File file = new File(folder.AbsolutePath, auth.CurrentUser.Uid + ".jpg");
+
+
+                        var stream = new FileStream(file.AbsolutePath, FileMode.Create);
+                        srcBitmap.Compress(Bitmap.CompressFormat.Png, 80, stream);
+
+                        //Upload to firestore
+                        //var task = storage.Reference.Child("profile/").Child(auth.Uid).PutFile(Android.Net.Uri.FromFile(new File(path)));
+                        var reference = db.Collection("users").Document(auth.CurrentUser.Uid);
+                        reference.Update("PhotoUrl", file.AbsolutePath);
+
+                        profilePic.SetImageBitmap(srcBitmap);
                         stream.Flush();
                         stream.Close();
+
 
                     }
                     catch (Exception ex)
@@ -473,5 +479,6 @@ namespace ReblocAndroid
                 }
             }
         }
+
     }
 }

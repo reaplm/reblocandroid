@@ -14,10 +14,10 @@ namespace ReblocAndroid
 {
     public class Global : Application
     {
-        public static string FName { set; get; }
-        public static string LName { set; get; }
-        public static string PhotoUrl { set; get; }
-        public static string Phone { set; get; }
-        public static string UserType { set; get; }
+        public static string FName { set; get; } = string.Empty;
+        public static string LName { set; get; } = string.Empty;
+        public static string PhotoUrl { set; get; } = string.Empty;
+        public static string Phone { set; get; } = string.Empty;
+        public static string UserType { set; get; } = string.Empty;
     }
 }
